@@ -17,7 +17,7 @@ exports.signUP = async (req, res) => {
     const { name, email, password } = req.body;
     // Validate user input
     if (!(email && password && name)) {
-        res.status(400).send("All input is required");
+        return res.status(400).send("All Inputs are required");
     }
     const oldUser = await User.findOne({ email: email.toLowerCase() });
 
@@ -73,17 +73,17 @@ exports.login = async (req, res) => {
                 }
             }
             if (cmp) {
-                res.status(200).send({ message: 'User logged in', userId: userObj._id });
+                return res.status(200).send({ message: 'User logged in', userId: userObj._id });
             } else {
-                res.status(400).send("Wrong username or password");
+                return res.status(400).send("Wrong username or password");
             }
         }
         else {
-            res.status(400).send("Wrong username or password");
+            return res.status(400).send("Wrong username or password");
         }
     }
     catch (error) {
         console.log(error);
-        res.status(500).send("Internal Server error Occured");
+        return res.status(500).send("Internal Server error Occured");
     }
 }

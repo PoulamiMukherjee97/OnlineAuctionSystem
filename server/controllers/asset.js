@@ -84,14 +84,14 @@ exports.buyAsset = async (req, res) => {
         if (accountBalance >= price) {
             const assetObj = await Asset.updateOne({ tokenId }, { $set: { owner: buyer } });
             if (assetObj.acknowledged && assetObj.modifiedCount > 0) {
-                tokenContract.methods.transferFrom(buyerObj.account, ownerObj.account, price).send({ from: buyerObj.account });
-                nftContract.methods.transferFrom(ownerObj.account, buyerObj.account, tokenId).send({ from: ownerObj.account });
-                res.status(200).send('Asset Owner updated');
+                await tokenContract.methods.transferFrom(buyerObj.account, ownerObj.account, price).send({ from: buyerObj.account });
+                await nftContract.methods.transferFrom(ownerObj.account, buyerObj.account, tokenId).send({ from: ownerObj.account });
+                return res.status(200).send('Asset Owner updated');
             } else {
-                res.status(400).send('Asset owner not updated')
+                return res.status(400).send('Asset owner not updated')
             }
         } else {
-            res.status(400).send('Insufficient Account Balance');
+            return res.status(400).send('Insufficient Account Balance');
         }
     } else {
         res.status(400).send("Buyer or Owner invalid");

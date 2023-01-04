@@ -6,7 +6,7 @@ exports.addToken = async (req, res) => {
     try {
         const userObj = await User.findOne({ _id: userId });
         if (userObj) {
-            tokenContract.methods.mint(token).send({ from: userObj.account })
+            await tokenContract.methods.mint(token).send({ from: userObj.account })
             return res.status(200).send('Token added');
         } else {
             return res.status(400).send('User not found');
@@ -27,12 +27,12 @@ exports.fetchAccountDetails = async (req, res) => {
             const etherBalance = await web3.utils.fromWei(balance, 'ether');
             const tokenBalance = await tokenContract.methods.balanceOf(userObj.account).call();
             const assetBalance = await nftContract.methods.balanceOf(userObj.account).call();
-            res.send({ etherBalance, tokenBalance, name: userObj.name, assetBalance, accountAddress: userObj.account });
+            return res.send({ etherBalance, tokenBalance, name: userObj.name, assetBalance, accountAddress: userObj.account });
         } else {
-            res.status(400).send("User not found");
+            return res.status(400).send("User not found");
         }
     }
     catch (err) {
-        res.status(500).send("Internal Server Error");
+        return res.status(500).send("Internal Server Error");
     }
 }
